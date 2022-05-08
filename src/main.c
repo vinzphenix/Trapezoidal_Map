@@ -7,14 +7,19 @@ int main(int argc, char *argv[]) {
 	exactinit();
 #endif
     
-    int i, j, anim, loaded;
+    int i, j, anim, loaded, should_save_vid, nImage;
+    GLfloat fps, start_gif;
     GLsizei nx, ny;
     char *endptr;
     TrapezoidalMap *tpzMap;
     
     anim = 1;
     loaded = 0;
-    
+    should_save_vid = 0;
+    nImage = 0;
+    fps = 10.;
+    char screenshot_dir[64];
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // HANDLE FLAGS (--> inspired from Gilles Poncelet / Louis Devillez project in 2020-2021)
     
@@ -99,15 +104,35 @@ int main(int argc, char *argv[]) {
             loaded = 1;
             i++;
         }
-        
+
+        else if (strcmp(argv[i], "-gif") == 0) {
+            should_save_vid = 1;
+        }
+
         if (strcmp(argv[i], "-d") == 0) anim = 0;
         
     }
 
     // allocated space for 100 pts (automatic increase)
-    if (!loaded) tpzMap = createEmptyTpzMap(100); 
+    if (!loaded) tpzMap = createEmptyTpzMap(100);
 
-    
+    if (should_save_vid) {
+        struct stat st = {0};
+
+        if (stat("../Video/", &st) == -1) {
+            mkdir("../Video", 0700);
+        }
+
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+        sprintf(screenshot_dir, "../Video/SCR_%d-%02d-%02dT%02d:%02d:%02d/", 
+                tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+                tm.tm_hour, tm.tm_min, tm.tm_sec);
+        if (stat(screenshot_dir, &st) == -1) {
+            mkdir(screenshot_dir, 0700);
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // COMPUTE THE TRAPEZOIDAL MAP
     float time_build;
@@ -146,6 +171,8 @@ int main(int argc, char *argv[]) {
             if (action == 'F') map->display_fast = 1 - map->display_fast;
             if (action == 'G') map->apply_gravity = 1 - map->apply_gravity;
             if (action == 'S') saveSegments("../data/segments_interactive.txt", tpzMap);
+            // if (action == 'V') {should_save_vid++; start_gif = map->time;}
+            if (action == 'X' && should_save_vid > 0) should_save_vid ++;
             
             if (action == 'X') addParticle(map, tpzMap, data, 20);
             updateParticles(map, tpzMap, data);
@@ -153,6 +180,20 @@ int main(int argc, char *argv[]) {
             drawTrapezoids(map, tpzMap);
             searchAndColorTrapezoid(map, tpzMap, data);
             
+            if (should_save_vid > 2) {
+                int t = (nImage * 10000) / fps;
+                // if (map->time - start_gif > t) {
+                if (10000 * map->time > t) {
+                    nImage += 1;
+                    char scr[64] = "";
+                    char ext[10] = "";
+                    strcpy(scr, screenshot_dir);
+                    sprintf(ext, "%05d.ppm", nImage);
+                    strcat(scr, ext);
+                    bov_window_screenshot(map->window, scr);
+                }
+            }
+
         } while(!glTpzWindowShouldClose());
         
         if (map->display_step) printf("\n"); fflush(stdout);

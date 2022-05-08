@@ -91,6 +91,7 @@ static void glTpzKeyCallback(GLFWwindow* self, int key, int scancode, int action
     else if (key == GLFW_KEY_I && action == GLFW_PRESS)  {theCurrentAction = 'I';}
     else if (key == GLFW_KEY_R && action == GLFW_PRESS)  {theCurrentAction = 'R';}
     else if (key == GLFW_KEY_S && action == GLFW_PRESS)  {theCurrentAction = 'S';}
+    else if (key == GLFW_KEY_V && action == GLFW_PRESS)  {theCurrentAction = 'V';}
     else if (key==GLFW_KEY_ESCAPE) glfwSetWindowShouldClose(self,GL_TRUE);
     
 }
@@ -263,7 +264,9 @@ DisplayMap* createDisplayMap(TrapezoidalMap *tpzMap) {
     map->spd = malloc(sizeof(map->spd[0]));
     map->tpz_part = malloc(sizeof(GLsizei));
     map->particles = bov_points_new(map->pos, map->nb_part, GL_DYNAMIC_DRAW);
-    
+
+    map->window = theCurrentWindow;
+
     createTexts(map);
     
     return map;

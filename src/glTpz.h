@@ -55,8 +55,9 @@ typedef struct {
     bov_text_t *text_pos;
     bov_text_t *text_neigh;
     bov_text_t *text_part;
-} DisplayMap;
 
+    bov_window_t *window;
+} DisplayMap;
 
 void glTpzSetColor(float color[4]);
 void glTpzSetTextColor(float color[4]);

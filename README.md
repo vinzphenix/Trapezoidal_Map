@@ -14,3 +14,9 @@ make
 ```
 
 > Once the code is executed, the list of commands is available by pressing `H` in the GUI.
+
+## Example 1
+![Example 1 gif](./Video/example/out.gif)
+
+## Example 2
+![Example 2 gif](./Video/particles/out.gif)

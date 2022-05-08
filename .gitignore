@@ -1,5 +1,13 @@
-backup/
-*.zip
+
+Video/**/*.ppm
+.vscode/
+
+# No build
+build/
+debug/
+
+# Python
+__pycache__/
 
 # Prerequisites
 *.d
@@ -53,12 +61,3 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-
-
-# No build
-build/
-debug/
-
-
-# Python
-__pycache__/

@@ -7,6 +7,8 @@
 #include <math.h>
 #include <assert.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "predicates.h"
 #include "BOV.h"
 
